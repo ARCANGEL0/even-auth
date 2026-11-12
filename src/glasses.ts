@@ -175,7 +175,7 @@ function buildContent(state: GlassesState, page: number): { content: string; pag
   const pages = Math.max(1, Math.ceil(state.rows.length / ROWS_PER_PAGE))
   const current = Math.min(Math.max(0, page), pages - 1)
 
-  const header = padBetween('AUTHENTICATOR', clockLabel())
+  const header = padBetween('G2 AUTH', clockLabel())
 
   const lines: string[] = [header]
 
@@ -194,12 +194,7 @@ function buildContent(state: GlassesState, page: number): { content: string; pag
     })
   }
 
-  while (lines.length < LINES_PER_SCREEN - 1) lines.push('')
-
-  const hints = ['2-TAP EXIT']
-  if (state.rows.length > 0) hints.unshift(state.hidden ? 'TAP REVEAL' : 'TAP HIDE')
-  if (pages > 1) hints.unshift(`SWIPE ${current + 1}/${pages}`)
-  lines.push(hints.join('  |  '))
+  while (lines.length < LINES_PER_SCREEN) lines.push('')
 
   return {
     content: lines.slice(0, LINES_PER_SCREEN).join('\n'),
