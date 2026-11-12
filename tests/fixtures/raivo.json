@@ -1,0 +1,1 @@
+[{"issuer": "PayPal", "account": "pp", "secret": "JBSWY3DPEHPK3PXP", "algorithm": "SHA1", "digits": "6", "timer": "30", "kind": "TOTP", "counter": "0"}]

@@ -1,0 +1,1 @@
+{"services": [{"name": "Dropbox", "secret": "JBSWY3DPEHPK3PXP", "otp": {"account": "me", "issuer": "Dropbox", "digits": 6, "period": 30, "algorithm": "SHA1", "tokenType": "TOTP"}}], "schemaVersion": 4}

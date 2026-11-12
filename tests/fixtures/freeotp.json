@@ -1,0 +1,1 @@
+{"tokenOrder": ["a"], "tokens": [{"algo": "SHA1", "counter": 0, "digits": 6, "issuerExt": "GitLab", "label": "dev", "period": 30, "secret": [72, 101, 108, 108, 111, 33, -34, -83, -66, -17], "type": "TOTP"}]}

@@ -1,0 +1,1 @@
+{"version": 1, "entries": [{"id": "x", "content": {"uri": "otpauth://totp/Proton:me%40proton.me?secret=JBSWY3DPEHPK3PXP&issuer=Proton", "entry_type": "Totp", "name": "Proton"}}]}

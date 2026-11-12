@@ -1,0 +1,1 @@
+{"version": 1, "header": {"slots": null, "params": null}, "db": {"version": 2, "entries": [{"type": "totp", "name": "bob", "issuer": "Discord", "info": {"secret": "JBSWY3DPEHPK3PXP", "algo": "SHA1", "digits": 6, "period": 30}}, {"type": "hotp", "name": "x", "issuer": "y", "info": {"secret": "JBSWY3DPEHPK3PXP"}}]}}

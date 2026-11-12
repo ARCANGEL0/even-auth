@@ -1,0 +1,1 @@
+otpauth-migration://offline?data=CisKCkhlbGxvId6tvu8SD2FsaWNlQGdtYWlsLmNvbRoGR29vZ2xlIAEoATACCh8KCjEyMzQ1Njc4OTASC0dpdEh1YjpvY3RvIAIoAjACChQKCkhlbGxvId6tvu8SBGhvdHAwARABGAE%3D

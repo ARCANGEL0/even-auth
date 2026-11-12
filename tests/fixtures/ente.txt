@@ -1,0 +1,2 @@
+otpauth://totp/Ente:me?secret=JBSWY3DPEHPK3PXP&issuer=Ente
+otpauth://totp/Npm:dev?secret=JBSWY3DPEHPK3PXP&issuer=Npm

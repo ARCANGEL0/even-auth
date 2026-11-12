@@ -1,0 +1,1 @@
+{"encrypted": false, "items": [{"name": "AWS", "login": {"username": "root", "totp": "JBSWY3DPEHPK3PXP"}}, {"name": "x", "login": {"totp": "otpauth://totp/Slack:me?secret=JBSWY3DPEHPK3PXP&issuer=Slack"}}]}
