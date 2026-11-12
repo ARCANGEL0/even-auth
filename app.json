@@ -1,0 +1,21 @@
+{
+  "package_id": "com.arcxlo.proton2fa",
+  "edition": "202601",
+  "name": "Authenticator",
+  "version": "0.1.0",
+  "min_sdk_version": "0.0.16",
+  "entrypoint": "index.html",
+  "permissions": [
+    {
+      "name": "camera",
+      "desc": "Scan a two-factor setup QR code to add an account."
+    },
+    {
+      "name": "album",
+      "desc": "Pick a saved QR code image to add or import accounts."
+    }
+  ],
+  "supported_languages": [
+    "en"
+  ]
+}

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no"
+    />
+    <meta name="theme-color" content="#07080c" />
+    <title>Authenticator · Even G2</title>
+  </head>
+  <body>
+    <svg class="svg-defs" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="ring-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#a99cff" />
+          <stop offset="0.55" stop-color="#8b7cff" />
+          <stop offset="1" stop-color="#2dd4bf" />
+        </linearGradient>
+      </defs>
+    </svg>
+    <div id="app">
+      <div class="noise"></div>
+
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-lock" id="brand-lock"></div>
+          <div class="brand-copy">
+            <h1>Authenticator</h1>
+            <p>EVEN G2 · HEADS-UP VAULT</p>
+          </div>
+        </div>
+        <div class="status" id="link-status">
+          <span class="dot"></span>
+          <span id="link-status-text">LINKING</span>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero-card">
+            <span class="corner tl"></span>
+            <span class="corner tr"></span>
+            <span class="corner bl"></span>
+            <span class="corner br"></span>
+
+            <p class="eyebrow">ZERO-KNOWLEDGE VAULT</p>
+            <h2>Your codes.<br /><span>On glass.</span></h2>
+            <p class="lede">
+              Import from Proton, Google, Aegis, 2FAS and more. Swipe the temple to flip accounts,
+              tap to hide, double-tap to exit.
+            </p>
+
+            <div class="hero-actions">
+              <button class="btn primary" id="open-add">Add +</button>
+              <button class="btn ghost" id="open-import">Import</button>
+              <button class="btn ghost" id="push-glasses">Push to lens</button>
+            </div>
+
+            <div class="hero-meta">
+              <span><b id="count-big">0</b> <span id="count-label">codes</span></span>
+              <span class="sep"></span>
+              <span id="source-label">LOCAL ONLY</span>
+            </div>
+          </div>
+
+          <div class="lens-wrap">
+            <div class="lens" aria-hidden="true">
+              <div class="lens-glow"></div>
+              <div class="lens-lock" id="lens-lock"></div>
+              <div class="lens-copy">
+                <span class="lens-kicker">AUTHENTICATOR</span>
+                <span class="lens-code" id="lens-code">● ● ●&nbsp;&nbsp;● ● ●</span>
+                <span class="lens-account" id="lens-account">NO CODES</span>
+              </div>
+              <div class="lens-ring">
+                <svg viewBox="0 0 36 36" aria-hidden="true">
+                  <circle class="lens-ring-track" cx="18" cy="18" r="15" />
+                  <circle class="lens-ring-value" id="lens-ring-value" cx="18" cy="18" r="15" />
+                </svg>
+                <span class="lens-ring-label" id="lens-ring-label">--</span>
+              </div>
+              <span class="lens-corner tl"></span>
+              <span class="lens-corner tr"></span>
+              <span class="lens-corner bl"></span>
+              <span class="lens-corner br"></span>
+            </div>
+            <p class="lens-caption">LIVE LENS PREVIEW · 576 × 288</p>
+          </div>
+        </section>
+
+        <section class="vault">
+          <div class="section-head">
+            <h3>Vault</h3>
+            <div class="section-tools">
+              <button class="icon-btn" id="toggle-hidden" aria-label="Hide codes"></button>
+              <span id="vault-count">0 CODES</span>
+            </div>
+          </div>
+
+          <div id="account-list" class="account-list" hidden></div>
+
+          <div id="empty-state" class="empty">
+            <div class="empty-lock" id="empty-lock"></div>
+            <h4>No codes yet</h4>
+            <p>Import from your authenticator app, or try the demo vault to see the lens.</p>
+            <div class="empty-actions">
+              <button class="btn primary" id="empty-add">Add +</button>
+              <button class="btn ghost" id="empty-import">Import</button>
+              <button class="btn ghost" id="load-demo">Load demo</button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="foot">
+        <span>Secrets never leave this device.</span>
+        <button class="text-btn danger" id="clear-all">Clear vault</button>
+      </footer>
+
+      <div class="sheet-backdrop" id="import-sheet" aria-hidden="true">
+        <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="import-title">
+          <div class="sheet-grab"></div>
+          <div class="sheet-head">
+            <div>
+              <p class="eyebrow">BRING YOUR CODES</p>
+              <h3 id="import-title">Import</h3>
+            </div>
+            <button class="icon-btn" id="close-import" aria-label="Close">✕</button>
+          </div>
+
+          <div class="import-grid" id="source-grid"></div>
+
+          <div class="paste-zone">
+            <label for="paste-input">Or paste an export or otpauth links</label>
+            <textarea
+              id="paste-input"
+              rows="3"
+              spellcheck="false"
+              placeholder='otpauth://totp/...  ·  otpauth-migration://...  ·  {...}'
+            ></textarea>
+            <div class="paste-actions">
+              <button class="btn small ghost" id="paste-clipboard">Paste clipboard</button>
+              <button class="btn small primary" id="paste-import">Import text</button>
+            </div>
+          </div>
+
+          <p class="disclaimer">Imports are parsed on-device. Nothing is uploaded.</p>
+        </section>
+      </div>
+
+      <div class="sheet-backdrop" id="guide-sheet" aria-hidden="true">
+        <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+          <div class="sheet-grab"></div>
+          <div class="sheet-head">
+            <div>
+              <p class="eyebrow" id="guide-eyebrow"></p>
+              <h3 id="guide-title">Export your vault</h3>
+            </div>
+            <button class="icon-btn" id="close-guide" aria-label="Close">✕</button>
+          </div>
+
+          <ol class="steps" id="guide-steps"></ol>
+
+          <div class="guide-actions">
+            <button class="btn primary" id="guide-pick">Choose file</button>
+            <button class="btn ghost" id="guide-open">Open app</button>
+          </div>
+
+          <p class="disclaimer" id="guide-note"></p>
+        </section>
+      </div>
+
+      <div class="sheet-backdrop" id="add-sheet" aria-hidden="true">
+        <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="add-title">
+          <div class="sheet-grab"></div>
+          <div class="sheet-head">
+            <div>
+              <p class="eyebrow">NEW CODE</p>
+              <h3 id="add-title">Add account</h3>
+            </div>
+            <button class="icon-btn" id="close-add" aria-label="Close">✕</button>
+          </div>
+
+          <div class="tabs" role="tablist">
+            <button class="tab active" role="tab" data-tab="key">Setup key</button>
+            <button class="tab" role="tab" data-tab="qr">Scan QR</button>
+          </div>
+
+          <form class="add-form" id="add-form" data-panel="key" autocomplete="off">
+            <label class="field">
+              <span>Service</span>
+              <input name="issuer" placeholder="GitHub" maxlength="60" />
+            </label>
+            <label class="field">
+              <span>Account</span>
+              <input name="name" placeholder="you@example.com" maxlength="80" />
+            </label>
+            <label class="field">
+              <span>Setup key</span>
+              <input name="secret" class="mono" placeholder="JBSW Y3DP EHPK 3PXP" autocapitalize="characters" spellcheck="false" required />
+            </label>
+
+            <details class="advanced">
+              <summary>Advanced</summary>
+              <div class="field-row">
+                <label class="field">
+                  <span>Digits</span>
+                  <select name="digits"><option>6</option><option>7</option><option>8</option></select>
+                </label>
+                <label class="field">
+                  <span>Period</span>
+                  <select name="period"><option value="30">30s</option><option value="60">60s</option><option value="15">15s</option></select>
+                </label>
+                <label class="field">
+                  <span>Algorithm</span>
+                  <select name="algorithm"><option>SHA1</option><option>SHA256</option><option>SHA512</option></select>
+                </label>
+              </div>
+            </details>
+
+            <div class="preview" id="add-preview">
+              <span>Preview</span>
+              <b id="add-code">--- ---</b>
+            </div>
+
+            <button class="btn primary wide" type="submit">Add account</button>
+          </form>
+
+          <div class="scan" data-panel="qr" hidden>
+            <div class="viewfinder" id="viewfinder">
+              <video id="scan-video" playsinline muted></video>
+              <div class="viewfinder-frame"></div>
+              <p id="scan-hint">Point the camera at a 2FA setup QR</p>
+            </div>
+            <div class="scan-actions">
+              <button class="btn primary" id="scan-camera">Use camera</button>
+              <button class="btn ghost" id="scan-photo">Take photo</button>
+              <button class="btn ghost" id="scan-image">Choose image</button>
+            </div>
+            <p class="disclaimer">Works with website setup QRs and Google Authenticator export QRs.</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="drop-overlay" id="drop-overlay"><div>Drop exports or QR images</div></div>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+      <input type="file" id="file-input" multiple hidden />
+      <input type="file" id="photo-input" accept="image/*" capture="environment" hidden />
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

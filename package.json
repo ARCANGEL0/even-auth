@@ -1,0 +1,27 @@
+{
+  "name": "proton-2fa",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Two-factor codes from any authenticator on Even Realities G2 glasses",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "simulate": "node node_modules/@evenrealities/evenhub-simulator/bin/index.js http://localhost:5173 --automation-port 9898",
+    "pack": "npm run build && evenhub pack app.json dist -o proton-2fa.ehpk",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@evenrealities/even_hub_sdk": "^0.0.16",
+    "@evenrealities/pretext": "^0.1.4",
+    "jsqr": "^1.4.0"
+  },
+  "devDependencies": {
+    "@evenrealities/evenhub-cli": "^0.2.0",
+    "@evenrealities/evenhub-simulator": "^0.9.5",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0",
+    "vitest": "^5.1.0"
+  }
+}
