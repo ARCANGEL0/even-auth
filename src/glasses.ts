@@ -30,7 +30,7 @@ export interface GlassesCallbacks {
   onExit: () => void
 }
 
-const ROWS_PER_PAGE = 8
+const ROWS_PER_PAGE = 4
 const LINES_PER_SCREEN = 10
 const INNER_WIDTH = 504
 const SPACE_WIDTH = Math.max(1, getTextWidth(' '))
@@ -38,11 +38,11 @@ const SPACE_WIDTH = Math.max(1, getTextWidth(' '))
 const LEFT_COLUMN = 300
 const CODE_COLUMN = 116
 const RING_SIZE = 24
-const RING_ROWS = 4
-const RING_ROW_HEIGHT = 27
+const RING_ROWS = 2
+const RING_ROW_HEIGHT = 54
 const RING_COLUMN_X = 478
-const RING_TOP_A = 32
-const RING_TOP_B = 140
+const RING_TOP_A = 40
+const RING_TOP_B = 148
 const RING_GAP = 6
 const RING_TRAIL = 8
 const RING_REFRESH_MS = 5000
@@ -79,6 +79,7 @@ const CONTAINER = {
   lock: { id: 2, name: 'lock' },
   ringA: { id: 3, name: 'ringA' },
   ringB: { id: 4, name: 'ringB' },
+  page: { id: 5, name: 'page' },
 }
 
 function lockIconData(size = 24): Uint8Array {
@@ -171,7 +172,7 @@ function ringPageData(state: GlassesState, page: number, imageIndex: number): Ui
   return ringImageData(state.rows.slice(start, start + RING_ROWS), state.hidden)
 }
 
-function buildContent(state: GlassesState, page: number): { content: string; page: number; pages: number } {
+function buildContent(state: GlassesState, page: number): { content: string; page: number; pages: number; pageLabel: string } {
   const pages = Math.max(1, Math.ceil(state.rows.length / ROWS_PER_PAGE))
   const current = Math.min(Math.max(0, page), pages - 1)
 
@@ -189,8 +190,10 @@ function buildContent(state: GlassesState, page: number): { content: string; pag
     const start = current * ROWS_PER_PAGE
     const slice = state.rows.slice(start, start + ROWS_PER_PAGE)
 
+    lines.push('')
     slice.forEach((row, index) => {
       lines.push(rowLine(row, start + index === state.selectedIndex, state.hidden))
+      if (index < slice.length - 1) lines.push('')
     })
   }
 
@@ -200,6 +203,7 @@ function buildContent(state: GlassesState, page: number): { content: string; pag
     content: lines.slice(0, LINES_PER_SCREEN).join('\n'),
     page: current,
     pages,
+    pageLabel: `${current + 1}/${pages}`,
   }
 }
 
@@ -215,6 +219,7 @@ export class GlassesUI {
   private disposed = false
   private unsubscribe: (() => void) | null = null
   private lastContent = ''
+  private lastPageLabel = ''
   private page = 0
   private lastState: GlassesState | null = null
   private queue: Promise<void> = Promise.resolve()
@@ -246,6 +251,23 @@ export class GlassesUI {
       content: built.content,
       textColor: 4,
       zOrderIndex: 1,
+    })
+
+    const page = new TextContainerProperty({
+      xPosition: 18,
+      yPosition: 252,
+      width: 96,
+      height: 32,
+      borderWidth: 0,
+      borderColor: 0,
+      borderRadius: 0,
+      paddingLength: 0,
+      containerID: CONTAINER.page.id,
+      containerName: CONTAINER.page.name,
+      isEventCapture: 0,
+      content: built.pageLabel,
+      textColor: 2,
+      zOrderIndex: 5,
     })
 
     const imageObject = [
@@ -281,8 +303,8 @@ export class GlassesUI {
     const result = await withTimeout(
       this.bridge.createStartUpPageContainer(
         new CreateStartUpPageContainer({
-          containerTotalNum: 4,
-          textObject: [list],
+          containerTotalNum: 5,
+          textObject: [list, page],
           imageObject,
         }),
       ),
@@ -297,6 +319,7 @@ export class GlassesUI {
 
     this.started = true
     this.lastContent = built.content
+    this.lastPageLabel = built.pageLabel
 
     await this.uploadImage(CONTAINER.lock, lockIconData(), 8000)
     await this.uploadImage(CONTAINER.ringA, ringPageData(state, this.page, 0), 8000)
@@ -316,12 +339,14 @@ export class GlassesUI {
     this.page = built.page
 
     const contentChanged = built.content !== this.lastContent
+    const pageLabelChanged = built.pageLabel !== this.lastPageLabel
     const ringKey = this.ringKey(state)
     const ringsChanged =
       ringKey !== this.lastRingKey || Date.now() - this.lastRingUpdate >= RING_REFRESH_MS
-    if (!contentChanged && !ringsChanged) return
+    if (!contentChanged && !pageLabelChanged && !ringsChanged) return
 
     this.lastContent = built.content
+    this.lastPageLabel = built.pageLabel
     if (ringsChanged) {
       this.lastRingKey = ringKey
       this.lastRingUpdate = Date.now()
@@ -338,6 +363,21 @@ export class GlassesUI {
               contentOffset: 0,
               contentLength: 0,
               content: built.content,
+            }),
+          ),
+          5000,
+          false,
+        )
+      }
+      if (pageLabelChanged) {
+        await withTimeout(
+          this.bridge.textContainerUpgrade(
+            new TextContainerUpgrade({
+              containerID: CONTAINER.page.id,
+              containerName: CONTAINER.page.name,
+              contentOffset: 0,
+              contentLength: 0,
+              content: built.pageLabel,
             }),
           ),
           5000,

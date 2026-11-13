@@ -25,10 +25,10 @@ export const sources: Source[] = [
     ios: 'proton-authenticator://',
     steps: [
       'Open <b>Proton Authenticator</b>.',
-      'Go to <b>Settings → Export</b> and save the JSON file.',
+      'Go to <b>Settings → Export</b> and choose <b>Plain text</b> (unencrypted). Save the JSON file.',
       'Come back here and choose that file.',
     ],
-    note: 'Proton does not share its database with other apps. Export is the supported path.',
+    note: 'Automatic backups and password-protected exports cannot be imported.',
   },
   {
     id: 'google',

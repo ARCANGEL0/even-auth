@@ -135,6 +135,11 @@ const stratumAlgos = ['SHA1', 'SHA256', 'SHA512']
 const parsers: Parser[] = [
   {
     source: 'Proton Authenticator',
+    locked: (data) =>
+      isRecord(data) &&
+      data.version !== undefined &&
+      typeof data.salt === 'string' &&
+      typeof data.content === 'string',
     parse: (data) => {
       if (!isRecord(data) || !Array.isArray(data.entries) || data.version === undefined) return null
       return collect(data.entries, (entry) => {
@@ -348,6 +353,12 @@ export function parseImport(raw: string): ImportResult {
   if (json !== null) {
     for (const parser of parsers) {
       if (parser.locked?.(json)) {
+        if (parser.source === 'Proton Authenticator') {
+          return failure(
+            parser.source,
+            'This Proton Authenticator backup is encrypted. Export a plain-text JSON file from Settings → Export.',
+          )
+        }
         return failure(parser.source, `${parser.source} backup is encrypted. Export it again without a password.`)
       }
       const result = parser.parse(json)

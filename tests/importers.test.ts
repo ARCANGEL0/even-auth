@@ -27,6 +27,14 @@ describe('parseImport', () => {
     expect(result.skipped).toBe(skipped)
   })
 
+  it('identifies encrypted Proton backups and directs users to a plain-text export', () => {
+    const result = parseImport(JSON.stringify({ version: 1, salt: 'c2FsdA==', content: 'ciphertext' }))
+
+    expect(result.source).toBe('Proton Authenticator')
+    expect(result.accounts).toHaveLength(0)
+    expect(result.warnings[0]).toMatch(/plain.?text/i)
+  })
+
   it.each(['aegis-enc.json', 'twofas-enc.2fas'])('flags encrypted %s', (file) => {
     const result = parseImport(fixture(file))
     expect(result.accounts).toHaveLength(0)
